@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanish Vocabulary Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="title-bar">
+            <h1>Spanish Vocabulary Game</h1>
+            <button id="toggle-flashcard-mode">
+                <i id="toggle-icon" class="fas fa-book"></i>
+            </button>
+        </div>
+
+        <div id="game-options">
+            <div class="option-group">
+                <label for="word-set"><i class="fas fa-book-open"></i> Word Set:</label>
+                <select id="word-set">
+                    <option value="set1">Set 1</option>
+                    <option value="set2">Set 2</option>
+                    <option value="set3">Set 3</option>
+                    <option value="set4">Set 4</option>
+                    <option value="set5">Set 5</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label for="game-mode"><i class="fas fa-gamepad"></i> Mode:</label>
+                <select id="game-mode">
+                    <option value="se">Spanish -> English</option>
+                    <option value="es">English -> Spanish</option>
+                    <option value="mix">Mix</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label for="num-questions"><i class="fas fa-list-ol"></i> Questions:</label>
+                <input type="number" id="num-questions" min="5" max="50" value="10">
+            </div>
+        </div>
+
+        <div id="game-area">
+            <div id="flashcard-container">
+                <div id="flashcard">
+                    <div class="front">
+                        <p id="flashcard-word-display">Ready?</p>
+                    </div>
+                    <div class="back">
+                        <p id="translation-display"></p>
+                    </div>
+                </div>
+                <button id="next-button">Next</button>
+            </div>
+
+            <div id="quiz-container">
+                <div id="word-container">
+                    <p id="word-display">Ready?</p>
+                    <p id="hint"></p>
+                </div>
+                <div id="input-container">
+                    <input type="text" id="user-input" placeholder="Enter translation" autocomplete="off">
+                    <button id="submit-button">Check</button>
+                </div>
+                <div id="feedback-container">
+                    <p id="feedback-message"></p>
+                </div>
+                <div id="stats-container">
+                    <p>Score: <span id="score">0</span></p>
+                    <p>Lives: <span id="lives">3</span></p>
+                </div>
+                <div id="progress-container">
+                    <div id="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="start-button">Start Game</button>
+            <button id="hint-button"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button id="restart-button">Restart Game</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
