@@ -22,16 +22,11 @@ const toggleFlashcardModeButton = document.getElementById('toggle-flashcard-mode
 const toggleIcon = document.getElementById('toggle-icon');
 const flashcardWordDisplay = document.getElementById('flashcard-word-display');
 
-let words = [];
-let currentWordIndex;
-let score = 0;
-let lives = 3;
-let gameActive = false;
-let numQuestions;
-let questionsAsked = 0;
-let mode;
-let currentWord;
-let isFlashcardMode = false;
+const GAME_CONSTANTS = {
+    INITIAL_LIVES: 3,
+    MIN_QUESTIONS: 1,
+    ANIMATION_DURATION: 500
+};
 
 const wordSets = {
     set1: [
@@ -54,18 +49,181 @@ const wordSets = {
         { spanish: '¿De dónde es usted?', english: 'Where are you from? (formal)' },
         { spanish: 'Soy de', english: 'I am from' }
     ],
-    set2: [],
+    set2: [
+        { spanish: 'la familia', english: 'family' },
+        { spanish: 'la madre/la mamá', english: 'mother/mom' },
+        { spanish: 'el padre/el papá', english: 'father/dad' },
+        { spanish: 'los padres', english: 'parents' },
+        { spanish: 'el hermano', english: 'brother' },
+        { spanish: 'la hermana', english: 'sister' },
+        { spanish: 'los hermanos', english: 'siblings' },
+        { spanish: 'el hijo', english: 'son' },
+        { spanish: 'la hija', english: 'daughter' },
+        { spanish: 'los hijos', english: 'children' },
+        { spanish: 'la abuela', english: 'grandmother' },
+        { spanish: 'el abuelo', english: 'grandfather' },
+        { spanish: 'los abuelos', english: 'grandparents' },
+        { spanish: 'el nieto', english: 'grandson' },
+        { spanish: 'la nieta', english: 'granddaughter' },
+        { spanish: 'los nietos', english: 'grandchildren' },
+        { spanish: 'los parientes', english: 'relatives' },
+        { spanish: 'la tía', english: 'aunt' },
+        { spanish: 'el tío', english: 'uncle' },
+        { spanish: 'el primo', english: 'cousin (male)' },
+        { spanish: 'la prima', english: 'cousin (female)' },
+        { spanish: 'el sobrino', english: 'nephew' },
+        { spanish: 'la sobrina', english: 'niece' },
+        { spanish: 'el esposo', english: 'husband' },
+        { spanish: 'la esposa', english: 'wife' },
+        { spanish: 'el gemelo', english: 'twin (male)' },
+        { spanish: 'la gemela', english: 'twin (female)' },
+        { spanish: 'la mascota', english: 'pet' },
+        { spanish: 'el perro', english: 'dog' },
+        { spanish: 'el gato', english: 'cat' },
+        { spanish: 'el pez', english: 'fish' },
+        { spanish: 'el medio hermano', english: 'half brother' },
+        { spanish: 'la media hermana', english: 'half sister' },
+        { spanish: 'la madrastra', english: 'stepmother' },
+        { spanish: 'el padrastro', english: 'stepfather' },
+        { spanish: 'la hermanastra', english: 'stepsister' },
+        { spanish: 'el hermanastro', english: 'stepbrother' },
+        { spanish: 'el bisabuelo', english: 'great-grandfather' },
+        { spanish: 'la bisabuela', english: 'great-grandmother' },
+        { spanish: 'los bisabuelos', english: 'great-grandparents' },
+        { spanish: 'el suegro', english: 'father-in-law' },
+        { spanish: 'la suegra', english: 'mother-in-law' },
+        { spanish: 'el cuñado', english: 'brother-in-law' },
+        { spanish: 'la cuñada', english: 'sister-in-law' },
+        { spanish: 'el amigo', english: 'friend (male)' },
+        { spanish: 'la amiga', english: 'friend (female)' },
+        { spanish: 'la gente', english: 'people' },
+        { spanish: 'la persona', english: 'person' },
+        { spanish: 'el novio', english: 'boyfriend' },
+        { spanish: 'la novia', english: 'girlfriend' },
+        { spanish: 'la pareja', english: 'partner' },
+        { spanish: 'el chico', english: 'boy' },
+        { spanish: 'la chica', english: 'girl' },
+        { spanish: 'el niño', english: 'child (male)' },
+        { spanish: 'la niña', english: 'child (female)' },
+        { spanish: 'bueno', english: 'good' },
+        { spanish: 'malo', english: 'bad' },
+        { spanish: 'simpático', english: 'nice' },
+        { spanish: 'antipático', english: 'not nice' },
+        { spanish: 'agradable', english: 'nice' },
+        { spanish: 'amable', english: 'kind' },
+        { spanish: 'joven', english: 'young' },
+        { spanish: 'viejo', english: 'old' },
+        { spanish: 'cómico', english: 'funny' },
+        { spanish: 'paciente', english: 'patient' },
+        { spanish: 'perezoso', english: 'lazy' },
+        { spanish: 'generoso', english: 'generous' },
+        { spanish: 'inteligente', english: 'smart' },
+        { spanish: 'trabajador', english: 'hard-working' },
+        { spanish: 'atrevido', english: 'daring' },
+        { spanish: 'divertido', english: 'fun' },
+        { spanish: 'sociable', english: 'social' },
+        { spanish: 'ambicioso', english: 'ambitious' },
+        { spanish: 'hablador', english: 'talkative' },
+        { spanish: 'tímido', english: 'shy' },
+        { spanish: 'comprensivo', english: 'understanding' },
+        { spanish: 'serio', english: 'serious' },
+        { spanish: 'callado', english: 'quiet' },
+        { spanish: 'alto', english: 'tall' },
+        { spanish: 'bajo', english: 'short' },
+        { spanish: 'bonito', english: 'pretty' },
+        { spanish: 'guapo', english: 'good-looking' },
+        { spanish: 'pequeño', english: 'small' },
+        { spanish: 'grande', english: 'big' },
+        { spanish: 'rubio', english: 'blonde' },
+        { spanish: 'pelirrojo', english: 'red-haired' },
+        { spanish: 'atlético', english: 'athletic' },
+        { spanish: 'gordo', english: 'fat' },
+        { spanish: 'feo', english: 'ugly' },
+        { spanish: 'moreno', english: 'dark-haired' },
+        { spanish: 'él', english: 'he' },
+        { spanish: 'ella', english: 'she' },
+        { spanish: 'ellos', english: 'they (masculine or mixed)' },
+        { spanish: 'ellas', english: 'they (feminine)' },
+        { spanish: 'es', english: 'is' },
+        { spanish: 'son', english: 'are' },
+        { spanish: 'muy', english: 'very' },
+        { spanish: 'Yo soy', english: 'I am' },
+        { spanish: 'Nosotros somos', english: 'We are' },
+        { spanish: 'Ellos son', english: 'They are' },
+        { spanish: '¿Cómo eres (tú)?', english: 'What are you like?' },
+        { spanish: '¿Cómo es él/ella?', english: 'What is he/she like?' },
+        { spanish: 'ayudar', english: 'to help' },
+        { spanish: 'bailar', english: 'to dance' },
+        { spanish: 'caminar', english: 'to walk' },
+        { spanish: 'cantar', english: 'to sing' },
+        { spanish: 'descansar', english: 'to rest' },
+        { spanish: 'dibujar', english: 'to draw' },
+        { spanish: 'escuchar', english: 'to listen' },
+        { spanish: 'necesitar', english: 'to need' },
+        { spanish: 'estudiar', english: 'to study' },
+        { spanish: 'hablar', english: 'to talk' },
+        { spanish: 'mirar', english: 'to watch' },
+        { spanish: 'practicar', english: 'to practice' },
+        { spanish: 'jugar', english: 'to play' },
+        { spanish: 'tomar', english: 'to take' },
+        { spanish: 'trabajar', english: 'to work' },
+        { spanish: 'viajar', english: 'to travel' }
+    ],
     set3: [],
     set4: [],
     set5: []
 };
 
+let words = [];
+let currentWordIndex;
+let score = 0;
+let lives = GAME_CONSTANTS.INITIAL_LIVES;
+let gameActive = false;
+let numQuestions;
+let questionsAsked = 0;
+let mode;
+let currentWord;
+let isFlashcardMode = false;
+
+// Function to initialize the game state
+function initializeGame() {
+    score = 0;
+    lives = GAME_CONSTANTS.INITIAL_LIVES;
+    questionsAsked = 0;
+    gameActive = false;
+    updateDisplay();
+}
+
+// Function to update the display elements
+function updateDisplay() {
+    scoreDisplay.textContent = score;
+    livesDisplay.textContent = lives;
+    feedbackMessage.textContent = "";
+    hintDisplay.textContent = "";
+    wordDisplay.textContent = "Ready?";
+    flashcardWordDisplay.textContent = "Ready?";
+    progressBar.style.width = '0%';
+    translationDisplay.textContent = '';
+    flashcard.classList.remove('flipped');
+}
+
+// Function to handle the end of the game
+function endGame() {
+    gameActive = false;
+    wordDisplay.textContent = "Game Over!";
+    flashcardWordDisplay.textContent = "Game Over!";
+    feedbackMessage.textContent = `Final Score: ${score} out of ${questionsAsked}`;
+    startButton.style.display = 'inline-block';
+    restartButton.style.display = 'none';
+    hintButton.style.display = 'none';
+    userInput.disabled = true;
+    submitButton.disabled = true;
+}
+
+// Function to load a word set
 function loadWordSet(setName) {
     words = wordSets[setName] || [];
-    if (words.length > 0) {
-        wordDisplay.textContent = "Ready?";
-        flashcardWordDisplay.textContent = "Ready?";
-    } else {
+    if (words.length === 0) {
         wordDisplay.textContent = "No words available in this set";
         flashcardWordDisplay.textContent = "No words available in this set";
     }
@@ -73,35 +231,28 @@ function loadWordSet(setName) {
     submitButton.disabled = true;
 }
 
+// Function to start the game
 function startGame() {
-    hintButton.style.display = isFlashcardMode ? 'none' : 'inline-block';
-    if (!isFlashcardMode) {
-        const selectedSet = wordSetSelect.value;
-        loadWordSet(selectedSet);
-        mode = gameModeSelect.value;
-        numQuestions = Math.max(1, parseInt(numQuestionsInput.value) || 1);
-        questionsAsked = 0;
-        gameActive = true;
-        score = 0;
-        lives = 3;
-        scoreDisplay.textContent = score;
-        livesDisplay.textContent = lives;
-        feedbackMessage.textContent = "";
-        hintDisplay.textContent = "";
-        startButton.style.display = 'none';
-        restartButton.style.display = 'inline-block';
-        userInput.value = '';
-        userInput.disabled = false;
-        submitButton.disabled = false;
-        shuffleArray(words);
-        currentWordIndex = 0;
-        updateProgressBar();
+    initializeGame();
+    const selectedSet = wordSetSelect.value;
+    loadWordSet(selectedSet);
+    mode = gameModeSelect.value;
+    numQuestions = Math.max(GAME_CONSTANTS.MIN_QUESTIONS, parseInt(numQuestionsInput.value) || GAME_CONSTANTS.MIN_QUESTIONS);
 
+    startButton.style.display = 'none';
+    restartButton.style.display = 'inline-block';
+    hintButton.style.display = 'inline-block';
+    userInput.disabled = false;
+    submitButton.disabled = false;
+    shuffleArray(words);
+    currentWordIndex = 0;
+    updateProgressBar();
+
+    if (!isFlashcardMode) {
+        gameActive = true;
         inputContainer.style.display = 'flex';
         flashcardContainer.style.display = 'none';
         nextButton.style.display = 'none';
-        translationDisplay.textContent = '';
-
         if (words.length > 0) {
             displayWord();
         }
@@ -109,26 +260,13 @@ function startGame() {
         inputContainer.style.display = 'none';
         flashcardContainer.style.display = 'flex';
         nextButton.style.display = 'inline-block';
-        translationDisplay.textContent = '';
-        flashcard.classList.remove('flipped');
-        startButton.style.display = 'none';
-        restartButton.style.display = 'inline-block';
-
-        const selectedSet = wordSetSelect.value;
-        words = wordSets[selectedSet] || [];
-        shuffleArray(words);
-        currentWordIndex = 0;
-        questionsAsked = 0;
-
         if (words.length > 0) {
             nextWord();
-        } else {
-            wordDisplay.textContent = "No words available in this set";
-            flashcardWordDisplay.textContent = "No words available in this set";
         }
     }
 }
 
+// Function to display the next word
 function nextWord() {
     if (isFlashcardMode) {
         if (words.length === 0) return;
@@ -154,6 +292,7 @@ function nextWord() {
     }
 }
 
+// Function to display a word
 function displayWord() {
     if (words.length === 0) {
         wordDisplay.textContent = "No words available";
@@ -173,17 +312,7 @@ function displayWord() {
     updateProgressBar();
 }
 
-function flipCard() {
-    if (isFlashcardMode) {
-        flashcard.classList.toggle('flipped');
-        if (flashcard.classList.contains('flipped')) {
-            translationDisplay.textContent = currentWord.english;
-        } else {
-            translationDisplay.textContent = '';
-        }
-    }
-}
-
+// Function to check the user's answer
 function checkAnswer() {
     if (!gameActive || isFlashcardMode) return;
 
@@ -215,18 +344,30 @@ function checkAnswer() {
     updateProgressBar();
 }
 
-function endGame() {
-    gameActive = false;
-    wordDisplay.textContent = "Game Over!";
-    flashcardWordDisplay.textContent = "Game Over!";
-    feedbackMessage.textContent = `Final Score: ${score} out of ${questionsAsked}`;
-    startButton.style.display = 'inline-block';
-    restartButton.style.display = 'none';
-    hintButton.style.display = 'none';
-    userInput.disabled = true;
-    submitButton.disabled = true;
+// Function to flip the flashcard
+function flipCard() {
+    if (isFlashcardMode) {
+        flashcard.classList.toggle('flipped');
+        if (flashcard.classList.contains('flipped')) {
+            translationDisplay.textContent = currentWord.english;
+        } else {
+            translationDisplay.textContent = '';
+        }
+    }
 }
 
+// Function to reset the game
+function resetGame() {
+    initializeGame();
+    startButton.style.display = 'inline-block';
+    restartButton.style.display = 'none';
+    userInput.value = '';
+    userInput.disabled = true;
+    submitButton.disabled = true;
+    hintButton.style.display = 'none';
+}
+
+// Utility function to shuffle an array
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -234,38 +375,19 @@ function shuffleArray(array) {
     }
 }
 
-function resetGame() {
-    gameActive = false;
-    score = 0;
-    lives = 3;
-    questionsAsked = 0;
-    scoreDisplay.textContent = score;
-    livesDisplay.textContent = lives;
-    feedbackMessage.textContent = "";
-    hintDisplay.textContent = "";
-    wordDisplay.textContent = "Ready?";
-    flashcardWordDisplay.textContent = "Ready?";
-    startButton.style.display = 'inline-block';
-    restartButton.style.display = 'none';
-    userInput.value = '';
-    userInput.disabled = true;
-    submitButton.disabled = true;
-    progressBar.style.width = '0%';
-    translationDisplay.textContent = '';
-    flashcard.classList.remove('flipped');
-    hintButton.style.display = 'none';
-}
-
+// Utility function to update the progress bar
 function updateProgressBar() {
     const percentage = (questionsAsked / numQuestions) * 100;
     progressBar.style.width = percentage + '%';
 }
 
+// Utility function to animate an element
 function animateElement(element, animationName) {
     element.classList.add(animationName);
-    setTimeout(() => element.classList.remove(animationName), 500);
+    setTimeout(() => element.classList.remove(animationName), GAME_CONSTANTS.ANIMATION_DURATION);
 }
 
+// Function to toggle between flashcard and quiz mode
 function toggleFlashcardMode() {
     isFlashcardMode = !isFlashcardMode;
     toggleIcon.classList.toggle('fa-book');
@@ -274,6 +396,16 @@ function toggleFlashcardMode() {
     flashcardContainer.style.display = isFlashcardMode ? 'flex' : 'none';
     resetGame();
 }
+
+// Event listener for the 'Enter' key on user input
+userInput.addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission or other default behavior
+        if (gameActive && !isFlashcardMode) {
+            checkAnswer();
+        }
+    }
+});
 
 // Initialization
 loadWordSet('set1');
@@ -291,6 +423,5 @@ hintButton.addEventListener('click', () => {
 });
 restartButton.addEventListener('click', resetGame);
 nextButton.addEventListener('click', nextWord);
-userInput.addEventListener('keypress', e => e.key === 'Enter' && checkAnswer());
 flashcard.addEventListener('click', flipCard);
 toggleFlashcardModeButton.addEventListener('click', toggleFlashcardMode);
