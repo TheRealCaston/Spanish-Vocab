@@ -34,7 +34,7 @@ body {
 .title-bar {
     background-color: var(--primary-color);
     color: white;
-    padding: 15px 0;
+    padding: 15px;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     position: absolute;
@@ -45,8 +45,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 15px;
-    padding-right: 15px;
 }
 
 .title-bar h1 {
@@ -109,7 +107,8 @@ label i {
     font-size: 1.1em;
 }
 
-select, input[type="number"] {
+select,
+input[type="number"] {
     padding: 10px;
     border: 2px solid var(--primary-color);
     border-radius: 8px;
@@ -145,7 +144,8 @@ select, input[type="number"] {
     transform: rotateY(180deg);
 }
 
-.front, .back {
+.front,
+.back {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -168,15 +168,10 @@ select, input[type="number"] {
     transform: rotateY(180deg);
 }
 
-#word-display, #translation-display {
-    font-size: 2em;
-    font-weight: 700;
-    text-align: center;
-}
-
-/* Add this rule for the flashcard word */
+#word-display,
+#translation-display,
 #flashcard-word-display {
-    font-size: 2em; /* Same size as #word-display */
+    font-size: 2em;
     font-weight: 700;
     text-align: center;
 }
@@ -232,7 +227,8 @@ button:active {
 }
 
 #feedback-container {
-    height: 30px;
+    /* Increase height for more space */
+    height: 50px;
     margin-bottom: 15px;
 }
 
@@ -241,6 +237,10 @@ button:active {
     font-size: 1.2em;
     transition: color 0.3s, transform 0.3s ease;
     transform-origin: center;
+    /* Allow text wrapping */
+    white-space: normal;
+    /* Add padding to prevent overlap */
+    padding: 0 10px;
 }
 
 .correct {
@@ -286,7 +286,6 @@ button:active {
 
 #hint-button {
     background-color: var(--secondary-color);
-    display: none;
 }
 
 #hint-button i {
