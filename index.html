@@ -1,89 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spanish Vocabulary Game</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spanish Vocab Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-    <div class="container">
-        <div class="title-bar">
-            <h1>Spanish Vocabulary Game</h1>
-            <button id="toggle-flashcard-mode" aria-label="Toggle Flashcard Mode">
-                <i id="toggle-icon" class="fas fa-book"></i>
-            </button>
+<body class="light-mode"> <header>
+        <div class="header-container">
+            <h1><i class="fas fa-language"></i> Spanish Vocab Pro</h1>
+            <div class="header-buttons">
+                <button id="toggle-dark-mode" aria-label="Toggle Dark Mode" class="icon-btn" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i> <i class="fas fa-sun" style="display: none;"></i> </button>
+                <button id="toggle-flashcard-mode" aria-label="Toggle Game Mode" class="icon-btn" title="Switch to Flashcard/Quiz Mode">
+                    <i id="toggle-icon" class="fas fa-layer-group"></i> </button>
+                 <button id="instructions-button" class="icon-btn" aria-label="Show Instructions" title="Instructions">
+                    <i class="fas fa-info-circle"></i>
+                </button>
+                 <button id="add-custom-word-button" class="icon-btn" aria-label="Add Custom Word" title="Add Custom Word" style="display:none;">
+                    <i class="fas fa-plus-circle"></i>
+                 </button>
+            </div>
         </div>
+    </header>
 
-        <div id="game-options">
-            <div class="option-group">
-                <label for="word-set"><i class="fas fa-book-open"></i> Word Set:</label>
+    <main>
+        <aside id="sidebar">
+            <h2><i class="fas fa-cog"></i> Settings</h2>
+            <div class="settings-group">
+                <label for="word-set">Word Set:</label>
                 <select id="word-set">
-                    <option value="set1">Set 1</option>
-                    <option value="set2">Set 2</option>
-                    <option value="set3">Set 3</option>
-                    <option value="set4">Set 4</option>
-                    <option value="set5">Set 5</option>
+                    <option value="set1">Common Phrases 1</option>
+                    <option value="set2">Family</option>
+                    <option value="set3">Descriptions & People</option>
+                    <option value="set4">Set 4 (Empty)</option>
+                    <option value="set5">Set 5 (Empty)</option>
+                    <option value="custom">Custom Words</option>
                 </select>
             </div>
-            <div class="option-group">
-                <label for="game-mode"><i class="fas fa-gamepad"></i> Mode:</label>
+            <div class="settings-group">
+                <label for="game-mode">Translate:</label>
                 <select id="game-mode">
-                    <option value="se">Spanish -> English</option>
-                    <option value="es">English -> Spanish</option>
+                    <option value="se">Spanish → English</option>
+                    <option value="es">English → Spanish</option>
                     <option value="mix">Mix</option>
                 </select>
             </div>
-            <div class="option-group">
-                <label for="num-questions"><i class="fas fa-list-ol"></i> Questions:</label>
-                <input type="number" id="num-questions" min="5" max="50" value="10">
+            <div class="settings-group">
+                <label for="num-questions">Questions:</label>
+                <input type="number" id="num-questions" min="1" max="50" value="10" />
             </div>
-        </div>
+            <div class="settings-group">
+                <label for="difficulty">Time per Question:</label>
+                <select id="difficulty">
+                    <option value="easy">Easy (30s)</option>
+                    <option value="medium" selected>Medium (20s)</option>
+                    <option value="hard">Hard (10s)</option>
+                </select>
+            </div>
+        </aside>
 
-        <div id="game-area">
-            <div id="flashcard-container">
-                <div id="flashcard">
-                    <div class="front">
-                        <p id="flashcard-word-display">Ready?</p>
+        <section id="game-container">
+            <div id="game-area">
+
+                 <div id="flashcard-container" class="hidden game-mode-area">
+                    <div id="flashcard">
+                        <div class="side front">
+                            <p id="flashcard-word-display">?</p>
+                        </div>
+                        <div class="side back">
+                             <button id="pronounce-button-flashcard-back" class="btn-pronounce-minimal" aria-label="Pronounce Answer" title="Pronounce Answer">
+                                 <i class="fas fa-volume-up"></i>
+                             </button>
+                            <p id="translation-display"></p>
+                        </div>
                     </div>
-                    <div class="back">
-                        <p id="translation-display"></p>
+                     <button id="pronounce-button-flashcard-front" class="btn btn-secondary pronounce-btn" aria-label="Pronounce Word" title="Pronounce Word">
+                         <i class="fas fa-volume-up"></i> Pronounce
+                     </button>
+                 </div>
+
+                <div id="quiz-container" class="game-mode-area">
+                     <div id="progress-container">
+                        <div id="progress-bar"></div>
                     </div>
-                </div>
-                <button id="next-button">Next</button>
-            </div>
+                    <div id="stats-container">
+                        <div class="stat"><i class="fas fa-star"></i><span id="score">0</span><small>Score</small></div>
+                        <div class="stat"><i class="fas fa-heart"></i><span id="lives">3</span><small>Lives</small></div>
+                        <div class="stat"><i class="fas fa-question-circle"></i><span id="question-counter">0</span>/<span id="total-questions">0</span><small>Question</small></div>
+                        <div class="stat"><i class="fas fa-bolt"></i><span id="streak">0</span><small>Streak</small></div>
+                        <div class="stat"><i class="fas fa-stopwatch"></i><span id="timer">0</span>s<small>Time</small></div>
+                        <div class="stat"><i class="fas fa-trophy"></i><span id="high-score">0</span><small>High Score</small></div>
+                    </div>
+                    <div id="word-container">
+                         <button id="pronounce-button-quiz" class="btn-pronounce-minimal" aria-label="Pronounce Word" title="Pronounce Word">
+                             <i class="fas fa-volume-up"></i>
+                         </button>
+                        <p id="word-display">Ready?</p>
+                        <p id="hint"></p>
+                    </div>
+                    <div id="input-container">
+                        <input type="text" id="user-input" placeholder="Enter translation..." autocomplete="off" aria-label="Translation Input"/>
+                        <button id="submit-button" class="btn btn-primary"><i class="fas fa-check"></i> Check</button>
+                    </div>
+                    <div id="feedback-container">
+                        <p id="feedback-message">&nbsp;</p>
+                    </div>
+                 </div>
 
-            <div id="quiz-container">
-                <div id="word-container">
-                    <p id="word-display">Ready?</p>
-                    <p id="hint"></p>
-                </div>
-                <div id="input-container">
-                    <input type="text" id="user-input" placeholder="Enter translation" autocomplete="off">
-                    <button id="submit-button">Check</button>
-                </div>
-                <div id="feedback-container">
-                    <p id="feedback-message"></p>
-                </div>
-                <div id="stats-container">
-                    <p>Score: <span id="score">0</span></p>
-                    <p>Lives: <span id="lives">3</span></p>
-                </div>
-                <div id="progress-container">
-                    <div id="progress-bar"></div>
+             </div>
+
+             <div id="controls">
+                 <button id="start-button" class="btn btn-start">
+                    <i class="fas fa-play"></i> Start Game
+                </button>
+
+                <div id="in-game-controls" class="hidden">
+                     <div id="quiz-controls">
+                         <button id="pause-button" class="btn btn-secondary" aria-label="Pause Game" title="Pause Game">
+                            <i class="fas fa-pause"></i> <span>Pause</span>
+                         </button>
+                         <button id="hint-button" class="btn btn-secondary" aria-label="Get Hint" title="Get Hint">
+                             <i class="fas fa-lightbulb"></i> Hint
+                         </button>
+                         <button id="show-answer-button" class="btn btn-secondary" aria-label="Show Answer" title="Show Answer">
+                            <i class="fas fa-eye"></i> Show Answer
+                         </button>
+                         <button id="skip-button" class="btn btn-secondary" aria-label="Skip Question" title="Skip Question">
+                            <i class="fas fa-forward"></i> Skip
+                         </button>
+                     </div>
+
+                     <div id="flashcard-controls" class="hidden">
+                           <button id="back-button" class="btn btn-secondary" aria-label="Previous Card" title="Previous Card">
+                                <i class="fas fa-arrow-left"></i> Back
+                           </button>
+                           <button id="next-button" class="btn btn-primary" aria-label="Next Card" title="Next Card">
+                                Next <i class="fas fa-arrow-right"></i>
+                           </button>
+                     </div>
+
+                     <button id="restart-button" class="btn btn-danger" aria-label="Restart Game" title="Restart Game">
+                         <i class="fas fa-redo"></i> Restart
+                     </button>
                 </div>
             </div>
-        </div>
+        </section>
+    </main>
 
-        <div class="button-container">
-            <button id="start-button">Start Game</button>
-            <button id="hint-button" style="display: none;"><i class="fas fa-lightbulb"></i> Hint</button>
-            <button id="restart-button" style="display: none;">Restart Game</button>
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-content">
+            <button class="close-btn" aria-label="Close modal">&times;</button>
+            <h2 id="modal-title" class="modal-title"></h2>
+            <div id="modal-body">
+                </div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
+</html>
 </html>
